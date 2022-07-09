@@ -4,6 +4,7 @@ from os import name
 import time
 
 from django.db.models.aggregates import Count
+from django.core.serializers import serialize
 from realtimeMonitoring.utils import getCityCoordinates
 from typing import Dict
 import requests
@@ -35,9 +36,17 @@ class DashboardView(TemplateView):
     '''
 
     def get(self, request, **kwargs):
-        if request.user == None or not request.user.is_authenticated:
-            return HttpResponseRedirect("/login/")
-        return render(request, 'index.html', self.get_context_data(**kwargs))
+       
+            locations = Location.objects.all().order_by('description')
+            serializeLocations = json.loads(serialize('json', locations))
+            
+            users = User.objects.all().order_by('login')
+            seerializeUsers = json.loads(serialize('json', users))
+
+            measurement = Measurement.objects.all().order_by('max_value')
+            serializeMeasurement = json.loads(serialize('json', measurement))
+
+            return JsonResponse({'locations': serializeLocations,  'users': seerializeUsers, 'measurements': serializeMeasurement })
 
     '''
     Se procesan los datos para cargar el contexto del template.
