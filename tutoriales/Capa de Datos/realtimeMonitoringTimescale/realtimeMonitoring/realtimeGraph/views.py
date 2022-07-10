@@ -54,13 +54,13 @@ class DashboardView(TemplateView):
         locations = Location.objects.all().order_by('description')
         serializeLocations = json.loads(serialize('json', locations))
         
-        users = User.objects.all().order_by('login')
-        seerializeUsers = json.loads(serialize('json', users))
+        data = Data.objects.filter(station=1)[:100]
+        datajson = json.loads(serialize('json', data))
 
         measurement = Measurement.objects.all().order_by('max_value')
         serializeMeasurement = json.loads(serialize('json', measurement))
 
-        return JsonResponse({'locations': serializeLocations,  'users': seerializeUsers, 'measurements': serializeMeasurement })
+        return JsonResponse({'locations': serializeLocations,  'data': datajson, 'measurements': serializeMeasurement })
 
     """
     Se procesan los datos para cargar el contexto del template.
