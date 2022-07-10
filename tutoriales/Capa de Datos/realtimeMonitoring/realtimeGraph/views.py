@@ -40,7 +40,7 @@ class DashboardView(TemplateView):
             locations = Location.objects.all()
             serializeLocations = json.loads(serialize('json', locations))
             
-            data = Data.objects.filter(station=1)[:100]
+            data = Data.objects.filter(station=1)[:10000]
             datajson = json.loads(serialize('json', data))
 
             measurement = Measurement.objects.all()
